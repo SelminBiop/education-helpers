@@ -3,12 +3,22 @@
     x:Class="WhatIsThis.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:WhatIsThis"
+    xmlns:local="clr-namespace:WhatIsThis.Views"
     Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+       <Tab Title="Associer">
+           <ShellContent ContentTemplate="{DataTemplate local:MainPage}"
+                         Route="MainPage" />
+       </Tab>
+       <Tab Title="Associations">
+           <ShellContent ContentTemplate="{DataTemplate local:AssociationsPage}"
+                         Route="AssociationsPage" />
+       </Tab>
+       <Tab Title="Jeu">
+           <ShellContent ContentTemplate="{DataTemplate local:JeuPage}"
+                         Route="JeuPage" />
+       </Tab>
+    </TabBar>
 
 </Shell>

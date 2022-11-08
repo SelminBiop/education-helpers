@@ -1,4 +1,7 @@
-﻿namespace WhatIsThis;
+﻿using WhatIsThis.ViewModels;
+using WhatIsThis.Views;
+
+namespace WhatIsThis;
 
 public static class MauiProgram
 {
@@ -13,8 +16,12 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			})
 			.Services
-			.AddSingleton<MainPage>()
-			.AddSingleton<MainPageViewModel>();
+			.AddTransient<MainPage>()
+			.AddTransient<MainPageViewModel>()
+			.AddTransient<AssociationsPage>()
+			.AddTransient<AssociationsPageViewModel>()
+			.AddTransient<JeuPage>()
+			.AddTransient<JeuPageViewModel>();
 
 		return builder.Build();
 	}

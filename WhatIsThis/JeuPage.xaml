@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:WhatIsThis"
+             x:Class="WhatIsThis.Views.JeuPage">
+
+    <FlexLayout Direction="Column"
+                AlignItems="Center"
+                JustifyContent="SpaceEvenly">        
+        <Label Text="{Binding WordToFind}"
+               FlexLayout.Basis="10%"
+               FontSize="18" />
+        <FlexLayout Wrap="Wrap"
+                    JustifyContent="SpaceAround"
+                    FlexLayout.Basis="80%"
+                    BindableLayout.ItemsSource="{Binding PossibleAnswers}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Image FlexLayout.Basis="45%"
+                           Source="{Binding Resource}">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OnImageTappedCommand}"
+                                                  NumberOfTapsRequired="1" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </FlexLayout>
+        <Label Text="{Binding Result}"
+               FlexLayout.Basis="10%" />
+    </FlexLayout>    
+</ContentPage>

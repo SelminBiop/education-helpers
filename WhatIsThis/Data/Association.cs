@@ -1,0 +1,1 @@
+public sealed record Association(string word, string correspondingResource);

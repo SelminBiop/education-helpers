@@ -21,6 +21,18 @@ build_metadata.AdditionalFiles.ManifestResourceName = WhatIsThis.AppShell.xaml
 build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
 build_metadata.AdditionalFiles.RelativePath = AppShell.xaml
 
+[/Users/SimonPro/Dev/education-helpers/WhatIsThis/AssociationsPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = WhatIsThis.AssociationsPage.xaml
+build_metadata.AdditionalFiles.TargetPath = AssociationsPage.xaml
+build_metadata.AdditionalFiles.RelativePath = AssociationsPage.xaml
+
+[/Users/SimonPro/Dev/education-helpers/WhatIsThis/JeuPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = WhatIsThis.JeuPage.xaml
+build_metadata.AdditionalFiles.TargetPath = JeuPage.xaml
+build_metadata.AdditionalFiles.RelativePath = JeuPage.xaml
+
 [/Users/SimonPro/Dev/education-helpers/WhatIsThis/MainPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = WhatIsThis.MainPage.xaml
