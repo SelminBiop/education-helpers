@@ -11,6 +11,7 @@
                FlexLayout.Basis="10%"
                FontSize="18" />
         <FlexLayout Wrap="Wrap"
+                    IsVisible="{Binding ShowPossibleAnswers}"
                     JustifyContent="SpaceAround"
                     FlexLayout.Basis="80%"
                     BindableLayout.ItemsSource="{Binding PossibleAnswers}">

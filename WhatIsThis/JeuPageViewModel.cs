@@ -8,15 +8,25 @@ namespace WhatIsThis.ViewModels;
 public sealed class JeuPageViewModel : ObservableObject
 {
     private const string AssociationsKey = "AssociationsKey";
-    private const int NumberOfPossibleAnswers = 6;
+    private const int NumberOfPossibleAnswers = 4;
+    private const int NumberOfTimesBeforeRemovingAssociation = 1;
 
     private IList<Association> _associations = new List<Association>();
+    private IList<Association> _removedAssociations = new List<Association>();
+    private Dictionary<Association, int> _associationTimesAskedCounter = new();
 
     private string _result = string.Empty;
     public string Result
     {
         get => _result;
         set => SetProperty(ref _result, value);
+    }
+
+    private bool _showPossibleAnswers;
+    public bool ShowPossibleAnswers
+    {
+        get => _showPossibleAnswers;
+        set => SetProperty(ref _showPossibleAnswers, value);
     }
 
     private string _wordToFind = string.Empty;
@@ -39,21 +49,59 @@ public sealed class JeuPageViewModel : ObservableObject
         if(associationsJson != string.Empty){
             _associations = JsonSerializer.Deserialize<List<Association>>(associationsJson);
         }
+
         for(int i = 0; i < NumberOfPossibleAnswers; i++)
         {
             _possibleAnswers.Add(new AnswerItem());
         }
+
+        SetupForNewGame();
+    }
+
+    public void SetupForNewGame()
+    {
+        Result = string.Empty;
+
+        ShowPossibleAnswers = true;
+
+        _removedAssociations.Clear();
+        _associationTimesAskedCounter.Clear();
 
         SetNextRound();
     }
 
     private void SetNextRound()
     {
-        Random r = new Random();
-        int rInt = r.Next(0, _associations.Count);
+        var associationsToPickFrom = _associations.Where(association => !_removedAssociations.Contains(association)).ToList();
 
-        var associationtoFind = _associations[rInt];
+        if(!associationsToPickFrom.Any())
+        {
+            ShowPossibleAnswers = false;
+            WordToFind = string.Empty;
+            Result = "Tous les mots ont été trouvés. Bravo!";
+
+            return;
+        }
+
+        Random r = new Random();
+        int rInt = r.Next(0, associationsToPickFrom.Count);
+
+        var associationtoFind = associationsToPickFrom[rInt];
         WordToFind = associationtoFind.word;
+
+        if(_associationTimesAskedCounter.TryGetValue(associationtoFind, out var associationAskedCount))
+        {
+            _associationTimesAskedCounter[associationtoFind] = ++associationAskedCount;
+        }
+        else
+        {
+            _associationTimesAskedCounter.Add(associationtoFind, 1);
+        }
+
+        if(_associationTimesAskedCounter[associationtoFind] >= NumberOfTimesBeforeRemovingAssociation)
+        {
+            _removedAssociations.Add(associationtoFind);
+        }
 
         var otherAnswers = _associations.Where(association => association.word != WordToFind).ToList();
 
@@ -113,7 +161,7 @@ public sealed class JeuPageViewModel : ObservableObject
 
         public void SetResource(string resource)
         {
-            Resource = ImageSource.FromFile(resource);
+            MainThread.BeginInvokeOnMainThread(() => Resource = ImageSource.FromFile(resource));
         }
     }
 }
