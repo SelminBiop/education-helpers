@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using WhatIsThis.Services;
 
 namespace WhatIsThis.ViewModels;
 
@@ -11,7 +13,7 @@ public sealed class JeuPageViewModel : ObservableObject
     private const int NumberOfPossibleAnswers = 4;
     private const int NumberOfTimesBeforeRemovingAssociation = 1;
 
-    private IList<Association> _associations = new List<Association>();
+    private IEnumerable<Association> _associations = new List<Association>();
     private IList<Association> _removedAssociations = new List<Association>();
     private Dictionary<Association, int> _associationTimesAskedCounter = new();
 
@@ -43,12 +45,9 @@ public sealed class JeuPageViewModel : ObservableObject
         set => SetProperty(ref _possibleAnswers, value);
     }
 
-    public JeuPageViewModel()
+    public JeuPageViewModel(IAssociationStorageService storageService)
     {
-        var associationsJson = Preferences.Get(AssociationsKey, string.Empty);
-        if(associationsJson != string.Empty){
-            _associations = JsonSerializer.Deserialize<List<Association>>(associationsJson);
-        }
+        _associations = storageService.Get(AssociationsKey);
 
         for(int i = 0; i < NumberOfPossibleAnswers; i++)
         {

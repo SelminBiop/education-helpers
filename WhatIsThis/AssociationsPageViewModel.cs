@@ -1,12 +1,16 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using WhatIsThis.Services;
 
 namespace WhatIsThis.ViewModels;
 
 public sealed class AssociationsPageViewModel : ObservableObject
 {
     private const string AssociationsKey = "AssociationsKey";
+
+    private readonly IAssociationStorageService _storageService;
 
     private List<Association> _storedAssociations = new();  
 
@@ -17,19 +21,16 @@ public sealed class AssociationsPageViewModel : ObservableObject
         set => SetProperty(ref _associations, value);
     }
 
-    public AssociationsPageViewModel()
+    public AssociationsPageViewModel(IAssociationStorageService storageService)
     {
+        _storageService = storageService;
     }
 
     public void UpdateAssociations()
     {
-        var associationsJson = Preferences.Get(AssociationsKey, string.Empty);
+        var storedAssociations = _storageService.Get(AssociationsKey);
 
-        if(associationsJson != string.Empty){
-            _storedAssociations = JsonSerializer.Deserialize<List<Association>>(associationsJson);
-        }
-
-        Associations = _storedAssociations.Select(association => new AssociationItem(
+        Associations = storedAssociations.Select(association => new AssociationItem(
             association.word,
             association.correspondingResource,
             async () => 
@@ -37,12 +38,10 @@ public sealed class AssociationsPageViewModel : ObservableObject
                 bool removeAssociation = await Application.Current.MainPage.DisplayAlert($"{association.word}", "Voulez-vous enlever cette association?", "Oui", "Non");
                 if(removeAssociation)
                 {
-                    _storedAssociations.Remove(association);
-                    var associationsJson = JsonSerializer.Serialize<IList<Association>>(_storedAssociations);
-                    Preferences.Set(AssociationsKey, associationsJson);
+                    _storageService.Remove(AssociationsKey, association);
                     MainThread.BeginInvokeOnMainThread(()=>
                     {
-                        Associations = Associations.Where(associationItem => associationItem.Word != association.word).ToList();
+                        UpdateAssociations();
                     });
                 }
             })).ToList();

@@ -1,4 +1,5 @@
-﻿using WhatIsThis.ViewModels;
+﻿using WhatIsThis.Services;
+using WhatIsThis.ViewModels;
 using WhatIsThis.Views;
 
 namespace WhatIsThis;
@@ -21,7 +22,8 @@ public static class MauiProgram
 			.AddTransient<AssociationsPage>()
 			.AddTransient<AssociationsPageViewModel>()
 			.AddTransient<JeuPage>()
-			.AddTransient<JeuPageViewModel>();
+			.AddTransient<JeuPageViewModel>()
+			.AddTransient<IAssociationStorageService, DeviceStorageService>();
 
 		return builder.Build();
 	}
