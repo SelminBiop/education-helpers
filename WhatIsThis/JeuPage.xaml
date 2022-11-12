@@ -5,16 +5,60 @@
 
     <FlexLayout Direction="Column"
                 AlignItems="Center"
-                JustifyContent="SpaceEvenly">        
-        <Label Text="{Binding WordToFind}"
+                JustifyContent="SpaceEvenly">
+        <Label Text="Sélectionnez les associations et entrez le nombre de choix de réponse"
+               IsVisible="{Binding IsInitialSetup}"
+               HorizontalTextAlignment="Center"
+               FlexLayout.Basis="5%"
+               FontSize="12" />
+        <Entry Text="{Binding NumberOfPossibleAnswer}"
+               IsVisible="{Binding IsInitialSetup}"
+               Keyboard="Numeric"
                FlexLayout.Basis="10%"
                FontSize="18" />
-        <FlexLayout Wrap="Wrap"
-                    IsVisible="{Binding ShowPossibleAnswers}"
-                    JustifyContent="SpaceAround"
-                    FlexLayout.Basis="80%"
-                    BindableLayout.ItemsSource="{Binding PossibleAnswers}">
-            <BindableLayout.ItemTemplate>
+        <CollectionView x:Name="MyCollectionView"
+                        IsVisible="{Binding IsInitialSetup}"
+                        SelectionMode="Multiple"
+                        FlexLayout.Basis="80%"
+                        SelectionChangedCommand="{Binding  OnSelectionChangedCommand}"
+                        SelectionChangedCommandParameter="{Binding SelectedItems, Source={x:Reference MyCollectionView}}"
+                        ItemsSource="{Binding Associations}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.RowSpan="2"
+                               Source="{Binding Resource}"
+                               Aspect="AspectFill"
+                               HeightRequest="60"
+                               WidthRequest="60" />
+                        <Label Grid.Column="1"
+                               Text="{Binding Word}"
+                               FontAttributes="Bold" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Text="Commencer"
+                IsVisible="{Binding IsInitialSetup}"
+                Command="{Binding OnStartGameCommand}"
+                FlexLayout.Basis="5%" />
+        <Label Text="{Binding WordToFind}"
+               IsVisible="{Binding IsNotInitialSetup}"
+               FlexLayout.Basis="10%"
+               FontSize="18" />
+        <CollectionView ItemsSource="{Binding PossibleAnswers}"
+                        ItemsLayout="VerticalGrid, 2"
+                        IsVisible="{Binding ShowPossibleAnswers}"
+                        FlexLayout.Basis="80%">
+            <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Image FlexLayout.Basis="45%"
                            Source="{Binding Resource}">
@@ -24,9 +68,14 @@
                         </Image.GestureRecognizers>
                     </Image>
                 </DataTemplate>
-            </BindableLayout.ItemTemplate>
-        </FlexLayout>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
         <Label Text="{Binding Result}"
+               IsVisible="{Binding IsNotInitialSetup}"
                FlexLayout.Basis="10%" />
+        <Button Text="Jouer a nouveau"
+                IsVisible="{Binding HasGameEnded}"
+                Command="{Binding OnSetupGameCommand}"
+                FlexLayout.Basis="10%" />
     </FlexLayout>    
 </ContentPage>

@@ -9,13 +9,4 @@ public partial class JeuPage : ContentPage
 		InitializeComponent();
         BindingContext = jeuPageViewModel;
 	}
-
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        if(BindingContext is JeuPageViewModel jeuPageViewModel)
-        {
-            jeuPageViewModel.SetupForNewGame();
-        }
-    }
 }

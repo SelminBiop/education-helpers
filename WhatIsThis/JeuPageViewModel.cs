@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.Json;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -10,12 +11,30 @@ namespace WhatIsThis.ViewModels;
 public sealed class JeuPageViewModel : ObservableObject
 {
     private const string AssociationsKey = "AssociationsKey";
-    private const int NumberOfPossibleAnswers = 4;
     private const int NumberOfTimesBeforeRemovingAssociation = 1;
 
-    private IEnumerable<Association> _associations = new List<Association>();
-    private IList<Association> _removedAssociations = new List<Association>();
-    private Dictionary<Association, int> _associationTimesAskedCounter = new();
+    private IList<string> _removedAssociations = new List<string>();
+    private Dictionary<string, int> _associationTimesAskedCounter = new();
+
+    private IEnumerable<AssociationsPageViewModel.AssociationItem> _selectedAssociations = new List<AssociationsPageViewModel.AssociationItem>();
+
+    private int _numberOfPossibleAnswer = 4;
+    public int NumberOfPossibleAnswer
+    {
+        get => _numberOfPossibleAnswer;
+        set
+        {
+            if (SetProperty(ref _numberOfPossibleAnswer, value))
+            {
+                ((Command)OnStartGameCommand).ChangeCanExecute();
+            }
+        } 
+    }
+
+    private bool EvaluateIfGameIsReady()
+    {
+        return NumberOfPossibleAnswer > 2 && NumberOfPossibleAnswer <= _selectedAssociations.Count();
+    }
 
     private string _result = string.Empty;
     public string Result
@@ -27,8 +46,41 @@ public sealed class JeuPageViewModel : ObservableObject
     private bool _showPossibleAnswers;
     public bool ShowPossibleAnswers
     {
-        get => _showPossibleAnswers;
+        get => _showPossibleAnswers && IsNotInitialSetup;
         set => SetProperty(ref _showPossibleAnswers, value);
+    }
+
+    private bool _hasGameEnded;
+    public bool HasGameEnded
+    {
+        get => _hasGameEnded;
+        set => SetProperty(ref _hasGameEnded, value);
+    }
+
+    private bool _isGameReady;
+    public bool IsGameReady
+    {
+        get => _isGameReady;
+        set => SetProperty(ref _isGameReady, value);
+    }
+
+    private bool _isInitialSetup = true;
+    public bool IsInitialSetup
+    {
+        get => _isInitialSetup;
+        set
+        {
+            if(SetProperty(ref _isInitialSetup, value))
+            {
+                OnPropertyChanged(nameof(IsNotInitialSetup));
+                OnPropertyChanged(nameof(ShowPossibleAnswers));
+            }
+        }
+    }
+
+    public bool IsNotInitialSetup
+    {
+        get => !_isInitialSetup;
     }
 
     private string _wordToFind = string.Empty;
@@ -38,6 +90,13 @@ public sealed class JeuPageViewModel : ObservableObject
         set => SetProperty(ref _wordToFind, value);
     }
 
+    private IList<AssociationsPageViewModel.AssociationItem> _associations = new List<AssociationsPageViewModel.AssociationItem>();
+    public IList<AssociationsPageViewModel.AssociationItem> Associations
+    {
+        get => _associations;
+        set => SetProperty(ref _associations, value);
+    }
+
     private ObservableCollection<AnswerItem> _possibleAnswers = new ObservableCollection<AnswerItem>();
     public ObservableCollection<AnswerItem> PossibleAnswers
     {
@@ -45,22 +104,65 @@ public sealed class JeuPageViewModel : ObservableObject
         set => SetProperty(ref _possibleAnswers, value);
     }
 
+    private ICommand _onStartGameCommand;
+    public ICommand OnStartGameCommand
+    {
+        get => _onStartGameCommand;
+        set => SetProperty(ref _onStartGameCommand, value);
+    }
+
+    private ICommand _onSetupGameCommand;
+    public ICommand OnSetupGameCommand
+    {
+        get => _onSetupGameCommand;
+        set => SetProperty(ref _onSetupGameCommand, value);
+    }
+
+    private ICommand _onSelectionChangedCommand;
+    public ICommand OnSelectionChangedCommand
+    {
+        get => _onSelectionChangedCommand;
+        set => SetProperty(ref _onSelectionChangedCommand, value);
+    }
+
     public JeuPageViewModel(IAssociationStorageService storageService)
     {
-        _associations = storageService.Get(AssociationsKey);
+        var associations = storageService.Get(AssociationsKey);
 
-        for(int i = 0; i < NumberOfPossibleAnswers; i++)
+        Associations = associations.Select(association => new AssociationsPageViewModel.AssociationItem(
+            association.word,
+            association.correspondingResource,
+            () => { })).ToList();
+
+        OnStartGameCommand = new Command(() =>
         {
-            _possibleAnswers.Add(new AnswerItem());
-        }
+            for (int i = 0; i < NumberOfPossibleAnswer; i++)
+            {
+                _possibleAnswers.Add(new AnswerItem());
+            }
 
-        SetupForNewGame();
+            SetupForNewGame();
+        }, canExecute: EvaluateIfGameIsReady);
+
+        OnSetupGameCommand = new Command(() =>
+        {
+            HasGameEnded = false;
+            IsInitialSetup = true;
+        });
+
+        OnSelectionChangedCommand = new Command(
+            associations =>
+            {
+                _selectedAssociations = (associations as IList<object>).Cast<AssociationsPageViewModel.AssociationItem>().ToList();
+                ((Command)OnStartGameCommand).ChangeCanExecute();
+            });
     }
 
     public void SetupForNewGame()
     {
         Result = string.Empty;
 
+        IsInitialSetup = false;
         ShowPossibleAnswers = true;
 
         _removedAssociations.Clear();
@@ -71,13 +173,15 @@ public sealed class JeuPageViewModel : ObservableObject
 
     private void SetNextRound()
     {
-        var associationsToPickFrom = _associations.Where(association => !_removedAssociations.Contains(association)).ToList();
+        var associationsToPickFrom = _selectedAssociations.Where(association => !_removedAssociations.Contains(association.Word)).ToList();
 
         if(!associationsToPickFrom.Any())
         {
             ShowPossibleAnswers = false;
             WordToFind = string.Empty;
+            HasGameEnded = true;
             Result = "Tous les mots ont été trouvés. Bravo!";
+            PossibleAnswers.Clear();
 
             return;
         }
@@ -86,27 +190,27 @@ public sealed class JeuPageViewModel : ObservableObject
         int rInt = r.Next(0, associationsToPickFrom.Count);
 
         var associationtoFind = associationsToPickFrom[rInt];
-        WordToFind = associationtoFind.word;
+        WordToFind = associationtoFind.Word;
 
-        if(_associationTimesAskedCounter.TryGetValue(associationtoFind, out var associationAskedCount))
+        if(_associationTimesAskedCounter.TryGetValue(WordToFind, out var associationAskedCount))
         {
-            _associationTimesAskedCounter[associationtoFind] = ++associationAskedCount;
+            _associationTimesAskedCounter[WordToFind] = ++associationAskedCount;
         }
         else
         {
-            _associationTimesAskedCounter.Add(associationtoFind, 1);
+            _associationTimesAskedCounter.Add(WordToFind, 1);
         }
 
-        if(_associationTimesAskedCounter[associationtoFind] >= NumberOfTimesBeforeRemovingAssociation)
+        if(_associationTimesAskedCounter[WordToFind] >= NumberOfTimesBeforeRemovingAssociation)
         {
-            _removedAssociations.Add(associationtoFind);
+            _removedAssociations.Add(WordToFind);
         }
 
-        var otherAnswers = _associations.Where(association => association.word != WordToFind).ToList();
+        var otherAnswers = _selectedAssociations.Where(association => association.Word != WordToFind).ToList();
 
-        int insertAnswer = r.Next(0, NumberOfPossibleAnswers);
+        int insertAnswer = r.Next(0, NumberOfPossibleAnswer);
         int currentIteration = 0;
-        while(currentIteration < NumberOfPossibleAnswers)
+        while(currentIteration < NumberOfPossibleAnswer)
         {
             var answerItem = _possibleAnswers[currentIteration];
             if(currentIteration == insertAnswer)
@@ -116,13 +220,13 @@ public sealed class JeuPageViewModel : ObservableObject
                     Result = "Bonne réponse!";
                     MainThread.BeginInvokeOnMainThread(SetNextRound);
                 });
-                answerItem.SetResource(associationtoFind.correspondingResource);
+                answerItem.SetResource(associationtoFind.Resource);
             }
             else
             {
                 int rInt2 = r.Next(0, otherAnswers.Count);
                 var otherAnswer = otherAnswers[rInt2];
-                answerItem.SetResource(otherAnswer.correspondingResource);
+                answerItem.SetResource(otherAnswer.Resource);
                 answerItem.SetAction(() => 
                 {
                     Result = "Mauvaise réponse! Essayez a nouveau";
@@ -158,9 +262,9 @@ public sealed class JeuPageViewModel : ObservableObject
             OnImageTappedCommand = new Command(_ => onAnswerSelectedAction.Invoke());
         }
 
-        public void SetResource(string resource)
+        public void SetResource(ImageSource source)
         {
-            MainThread.BeginInvokeOnMainThread(() => Resource = ImageSource.FromFile(resource));
+            MainThread.BeginInvokeOnMainThread(() => Resource = source);
         }
     }
 }

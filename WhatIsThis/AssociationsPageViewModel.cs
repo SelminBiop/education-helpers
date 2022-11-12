@@ -12,8 +12,6 @@ public sealed class AssociationsPageViewModel : ObservableObject
 
     private readonly IAssociationStorageService _storageService;
 
-    private List<Association> _storedAssociations = new();  
-
     private IList<AssociationItem> _associations = new List<AssociationItem>();
     public IList<AssociationItem> Associations
     {
