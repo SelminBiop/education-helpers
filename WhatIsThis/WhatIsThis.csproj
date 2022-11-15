@@ -38,4 +38,12 @@
   <ItemGroup>
     <Folder Include="Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <MauiXaml Condition=" '$(EnableDefaultXamlItems)' == 'true' " Update="MainPage %28copy%29.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
+    <MauiXaml Condition=" '$(EnableDefaultXamlItems)' == 'true' " Update="CreateAssociationPage.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
+  </ItemGroup>
 </Project>

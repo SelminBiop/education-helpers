@@ -1,6 +1,7 @@
 ﻿using WhatIsThis.Services;
 using WhatIsThis.ViewModels;
 using WhatIsThis.Views;
+using WhatIsThis.QuestionType;
 
 namespace WhatIsThis;
 
@@ -23,8 +24,13 @@ public static class MauiProgram
 			.AddTransient<AssociationsPageViewModel>()
 			.AddTransient<JeuPage>()
 			.AddTransient<JeuPageViewModel>()
-			.AddTransient<IAssociationStorageService, DeviceStorageService>();
+			.AddTransient<CreateAssociationPage>()
+			.AddTransient<CreateAssociationPageViewModel>()
+			.AddTransient<IQuestionType, AssociationQuestion>()
+            .AddTransient<IAssociationStorageService, DeviceStorageService>();
 
-		return builder.Build();
+        Routing.RegisterRoute("MainPage/CreateAssociationPage", typeof(CreateAssociationPage));
+
+        return builder.Build();
 	}
 }

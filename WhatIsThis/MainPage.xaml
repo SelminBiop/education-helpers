@@ -1,43 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:WhatIsThis"
              x:Class="WhatIsThis.Views.MainPage">
 
     <ScrollView>
         <VerticalStackLayout
             Spacing="25"
             Padding="30,0"
-            VerticalOptions="Center">
+            VerticalOptions="Center"
+            BindableLayout.ItemsSource="{Binding QuestionTypes}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Button Text="{Binding FriendlyName}"
+                            Command="{Binding StartCreationCommand}"/>
 
-            <Label
-                Text="{Binding Word}"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+                </DataTemplate>
 
-            <Entry
-                x:Name="associationEntry"
-                Placeholder="Ecrire le mot"
-                Text="{Binding Word}"
-                HeightRequest="200"
-                HorizontalOptions="Center"
-                ReturnType="Done" />
-
-            <Label
-                Text="{Binding FileName}"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
-
-            <Button
-                Text="Choisir l'image"
-                HorizontalOptions="Center"
-                Command="{Binding OnImageChosenCommand}" />
-
-            <Button
-                Text="Sauvegarder l'association"
-                HorizontalOptions="Center"
-                Command="{Binding OnSaveCommand}" />
-
+            </BindableLayout.ItemTemplate>
         </VerticalStackLayout>
     </ScrollView>
 
