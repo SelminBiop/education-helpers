@@ -60,7 +60,7 @@
                         FlexLayout.Basis="80%">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Image FlexLayout.Basis="45%"
+                    <Image FlexLayout.Basis="15%"
                            Source="{Binding Resource}">
                         <Image.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OnImageTappedCommand}"
