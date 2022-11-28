@@ -1,5 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <Nullable>enable</Nullable>
     <TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
@@ -38,12 +39,5 @@
   <ItemGroup>
     <Folder Include="Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <MauiXaml Condition=" '$(EnableDefaultXamlItems)' == 'true' " Update="MainPage %28copy%29.xaml">
-      <SubType>Designer</SubType>
-    </MauiXaml>
-    <MauiXaml Condition=" '$(EnableDefaultXamlItems)' == 'true' " Update="CreateAssociationPage.xaml">
-      <SubType>Designer</SubType>
-    </MauiXaml>
-  </ItemGroup>
+
 </Project>

@@ -11,9 +11,14 @@
             VerticalOptions="Center">
 
             <Entry
-                x:Name="associationEntry"
                 Placeholder="Ecrire le mot"
                 Text="{Binding Word}"
+                HorizontalOptions="Center"
+                ReturnType="Done" />
+
+            <Entry
+                Placeholder="Entrer la categorie (optionnel)"
+                Text="{Binding Category}"
                 HorizontalOptions="Center"
                 ReturnType="Done" />
 

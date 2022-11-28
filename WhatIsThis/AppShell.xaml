@@ -16,8 +16,8 @@
                          Route="AssociationsPage" />
        </Tab>
        <Tab Title="Jouer">
-           <ShellContent ContentTemplate="{DataTemplate local:JeuPage}"
-                         Route="JeuPage" />
+           <ShellContent ContentTemplate="{DataTemplate local:ChooseCategoryPage}"
+                         Route="ChooseCategoryPage" />
        </Tab>
     </TabBar>
 

@@ -26,10 +26,13 @@ public static class MauiProgram
 			.AddTransient<JeuPageViewModel>()
 			.AddTransient<CreateAssociationPage>()
 			.AddTransient<CreateAssociationPageViewModel>()
-			.AddTransient<IQuestionType, AssociationQuestion>()
+            .AddTransient<ChooseCategoryPage>()
+            .AddTransient<ChooseCategoryPageViewModel>()
+            .AddTransient<IQuestionType, AssociationQuestion>()
             .AddTransient<IAssociationStorageService, DeviceStorageService>();
 
-        Routing.RegisterRoute("MainPage/CreateAssociationPage", typeof(CreateAssociationPage));
+        Routing.RegisterRoute("CreateAssociationPage", typeof(CreateAssociationPage));
+        Routing.RegisterRoute("JeuPage", typeof(JeuPage));
 
         return builder.Build();
 	}

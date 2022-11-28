@@ -4,11 +4,32 @@ using WhatIsThis.Services;
 
 namespace WhatIsThis.ViewModels;
 
+[QueryProperty(nameof(AssociationToModify), "AssociationToModify")]
 public sealed class CreateAssociationPageViewModel : ObservableObject
 {
     private const string AssociationsKey = "AssociationsKey";
 
+    private readonly IAssociationStorageService _associationStorageService;
+
     private FileResult _fileResult;
+
+    private Association _associationToRemove;
+
+    private string _associationToModify;
+    public string AssociationToModify {
+        get => _associationToModify;
+        set 
+        {
+            _associationToModify = value;
+            _associationToRemove = _associationStorageService
+                .Get(AssociationsKey)
+                .Where(association => association.word == _associationToModify)
+                .FirstOrDefault();
+            Word = _associationToRemove.word;
+            Category = _associationToRemove.category;
+            ImageSource = ImageSource.FromFile(_associationToRemove.correspondingResource);
+        }        
+    }
 
     private string _word;
     public string Word
@@ -22,6 +43,14 @@ public sealed class CreateAssociationPageViewModel : ObservableObject
             }
         }
     }
+
+    private string _category;
+    public string Category
+    {
+        get => _category;
+        set => SetProperty(ref _category, value);
+    }
+
 
     private bool _showImage;
     public bool ShowImage
@@ -48,6 +77,8 @@ public sealed class CreateAssociationPageViewModel : ObservableObject
 
     public CreateAssociationPageViewModel(IAssociationStorageService storageService)
     {
+        _associationStorageService = storageService;
+
         OnImageChosenCommand = new Command(async () =>
         {
             _fileResult = await MediaPicker.PickPhotoAsync();
@@ -60,7 +91,11 @@ public sealed class CreateAssociationPageViewModel : ObservableObject
 
         OnSaveCommand = new Command(() =>
         {
-            storageService.Add(AssociationsKey, new Association(Word, _fileResult.FullPath));
+            if(_associationToRemove is not null) {
+                _associationStorageService.Remove(AssociationsKey, _associationToRemove);
+            }
+
+            _associationStorageService.Add(AssociationsKey, new Association(Word, _fileResult?.FullPath ?? _associationToRemove.correspondingResource, Category));
 
             Word = string.Empty;
             ShowImage = false;
