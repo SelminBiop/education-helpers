@@ -1,22 +1,39 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text.Json;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using WhatIsThis.Services;
 
 namespace WhatIsThis.ViewModels;
-
+[QueryProperty(nameof(Category), "Category")]
 public sealed class JeuPageViewModel : ObservableObject
 {
     private const string AssociationsKey = "AssociationsKey";
     private const int NumberOfTimesBeforeRemovingAssociation = 1;
 
+    private readonly IAssociationStorageService _storageService;
+
     private IList<string> _removedAssociations = new List<string>();
     private Dictionary<string, int> _associationTimesAskedCounter = new();
 
     private IEnumerable<AssociationsPageViewModel.AssociationItem> _selectedAssociations = new List<AssociationsPageViewModel.AssociationItem>();
+
+    private string _category;
+    public string Category {
+        get => _category;
+        set 
+        {
+            _category = value;
+
+            var storedAssociations = _storageService.Get(AssociationsKey);
+
+            Associations = storedAssociations
+                .Where(association => association.category == _category)
+                .Select(association => new AssociationsPageViewModel.AssociationItem(
+                association.word,
+                association.correspondingResource,
+                () => { })).ToList();
+        }
+    }
 
     private int _numberOfPossibleAnswer = 4;
     public int NumberOfPossibleAnswer
@@ -127,12 +144,7 @@ public sealed class JeuPageViewModel : ObservableObject
 
     public JeuPageViewModel(IAssociationStorageService storageService)
     {
-        var associations = storageService.Get(AssociationsKey);
-
-        Associations = associations.Select(association => new AssociationsPageViewModel.AssociationItem(
-            association.word,
-            association.correspondingResource,
-            () => { })).ToList();
+        _storageService = storageService;
 
         OnStartGameCommand = new Command(() =>
         {

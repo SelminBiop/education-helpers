@@ -39,6 +39,9 @@
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
+    <MauiXaml Update="ChooseCategoryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Condition=" '$(EnableDefaultXamlItems)' == 'true' " Update="MainPage %28copy%29.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>

@@ -12,8 +12,8 @@ public sealed class AssociationsPageViewModel : ObservableObject
 
     private readonly IAssociationStorageService _storageService;
 
-    private IList<AssociationItem> _associations = new List<AssociationItem>();
-    public IList<AssociationItem> Associations
+    private IList<AssociationsGroup> _associations = new List<AssociationsGroup>();
+    public IList<AssociationsGroup> Associations
     {
         get => _associations;
         set => SetProperty(ref _associations, value);
@@ -28,21 +28,52 @@ public sealed class AssociationsPageViewModel : ObservableObject
     {
         var storedAssociations = _storageService.Get(AssociationsKey);
 
-        Associations = storedAssociations.Select(association => new AssociationItem(
-            association.word,
-            association.correspondingResource,
-            async () => 
+        Associations = storedAssociations.GroupBy(
+            association => association.category,
+            association => association,
+            (category, associations) =>
             {
-                bool removeAssociation = await Application.Current.MainPage.DisplayAlert($"{association.word}", "Voulez-vous enlever cette association?", "Oui", "Non");
-                if(removeAssociation)
+                var associationItems = associations.Select(association => new AssociationItem(
+                association.word,
+                association.correspondingResource,
+                async () =>
                 {
-                    _storageService.Remove(AssociationsKey, association);
-                    MainThread.BeginInvokeOnMainThread(()=>
-                    {
-                        UpdateAssociations();
-                    });
-                }
-            })).ToList();
+                    await OnAssociationSelected(association);
+                })).ToList();
+                return new AssociationsGroup(category, associationItems);
+            }).ToList();
+    }
+    
+    private async Task OnAssociationSelected(Association association) 
+    {
+        string choice = await Application.Current.MainPage.DisplayActionSheet($"Que voulez-vous faire avec {association.word}?", "Annuler", "Effacer", "Modifier");
+        if (choice == "Effacer") {
+            _storageService.Remove(AssociationsKey, association);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                UpdateAssociations();
+            });
+        }
+        else if(choice == "Modifier")
+        {
+            var navigationParameters = new Dictionary<string, object>
+            {
+                { "AssociationToModify", association.word }
+            };
+            await Shell.Current.GoToAsync("CreateAssociationPage", navigationParameters);
+        }
+    }
+
+    public sealed class AssociationsGroup : List<AssociationItem>
+    {
+        private const string NoCategoryName = "Aucune categorie";
+
+        public string Name { get; private set; } = NoCategoryName;
+
+        public AssociationsGroup(string name, List<AssociationItem> associations) : base(associations)
+        {
+            Name = string.IsNullOrEmpty(name) ? NoCategoryName : name;
+        }
     }
 
     public sealed class AssociationItem : ObservableObject
@@ -69,7 +100,10 @@ public sealed class AssociationsPageViewModel : ObservableObject
             set => SetProperty(ref _onAssociationTappedCommand, value);
         }
 
-        public AssociationItem(string word, string resourcePath, Action onAssociationSelectedAction)
+        public AssociationItem(
+            string word,
+            string resourcePath,
+            Action onAssociationSelectedAction)
         {
             Word = word;
             SetAction(onAssociationSelectedAction);

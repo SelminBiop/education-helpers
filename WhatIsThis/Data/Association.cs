@@ -1,1 +1,1 @@
-public sealed record Association(string word, string correspondingResource);
+public sealed record Association(string word, string correspondingResource, string? category = null);

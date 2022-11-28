@@ -8,7 +8,7 @@ internal sealed class AssociationQuestion : IQuestionType
 	public AssociationQuestion()
 	{
         StartCreationCommand = new Command(() =>
-        Shell.Current.GoToAsync("//MainPage/CreateAssociationPage"));
+        Shell.Current.GoToAsync("CreateAssociationPage"));
 	}
 
     public string FriendlyName => "Créer une Association";
