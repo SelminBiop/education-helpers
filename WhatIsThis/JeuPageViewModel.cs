@@ -27,7 +27,7 @@ public sealed class JeuPageViewModel : ObservableObject
             var storedAssociations = _storageService.Get(AssociationsKey);
 
             Associations = storedAssociations
-                .Where(association => association.category == _category)
+                .Where(association => association.Category == _category)
                 .Select(association => new AssociationsPageViewModel.AssociationItem(
                 association.word,
                 association.correspondingResource,

@@ -29,7 +29,7 @@ public sealed class AssociationsPageViewModel : ObservableObject
         var storedAssociations = _storageService.Get(AssociationsKey);
 
         Associations = storedAssociations.GroupBy(
-            association => association.category,
+            association => association.Category,
             association => association,
             (category, associations) =>
             {

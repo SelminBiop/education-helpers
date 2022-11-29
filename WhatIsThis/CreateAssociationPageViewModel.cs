@@ -26,7 +26,7 @@ public sealed class CreateAssociationPageViewModel : ObservableObject
                 .Where(association => association.word == _associationToModify)
                 .FirstOrDefault();
             Word = _associationToRemove.word;
-            Category = _associationToRemove.category;
+            Category = _associationToRemove.Category;
             ImageSource = ImageSource.FromFile(_associationToRemove.correspondingResource);
         }        
     }

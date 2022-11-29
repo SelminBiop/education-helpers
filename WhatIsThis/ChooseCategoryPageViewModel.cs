@@ -24,7 +24,7 @@ namespace WhatIsThis.ViewModels
             var storedAssociations = _associationStorageService.Get(AssociationsKey);
 
             Categories = storedAssociations.GroupBy(
-                association => association.category,
+                association => association.Category,
                 association => association,
                 (category, associations) => {
                     return new CategoryItem
