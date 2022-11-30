@@ -25,6 +25,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./WhatIsThis/WhatIsThis.sln
     - name: Build
-      run: dotnet build --no-restore --project ./WhatIsThis/WhatIsThis.sln
+      run: dotnet build ./WhatIsThis/WhatIsThis.sln --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal --project ./WhatIsThis/WhatIsThis.sln
+      run: dotnet test ./WhatIsThis/WhatIsThis.sln --no-build --verbosity normal
