@@ -13,6 +13,9 @@ jobs:
   build:
 
     runs-on: windows-latest
+    
+    env:
+      Project_Path: ./WhatIsThis/WhatIsThis.sln
 
     steps:
     - uses: actions/checkout@v3
@@ -21,10 +24,10 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Restore workloads
-      run: dotnet workload restore --project ./WhatIsThis/WhatIsThis.sln
+      run: dotnet workload restore --project $Project_Path
     - name: Restore dependencies
-      run: dotnet restore ./WhatIsThis/WhatIsThis.sln
+      run: dotnet restore $Project_Path
     - name: Build
-      run: dotnet build ./WhatIsThis/WhatIsThis.sln --no-restore
+      run: dotnet build $Project_Path --no-restore
     - name: Test
-      run: dotnet test ./WhatIsThis/WhatIsThis.sln --no-build --verbosity normal
+      run: dotnet test $Project_Path --no-build --verbosity normal
