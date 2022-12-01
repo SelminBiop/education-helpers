@@ -6,16 +6,11 @@
     <FlexLayout Direction="Column"
                 AlignItems="Center"
                 JustifyContent="SpaceEvenly">
-        <Label Text="Sélectionnez les associations et entrez le nombre de choix de réponse"
+        <Label Text="Sélectionnez les associations"
                IsVisible="{Binding IsInitialSetup}"
                HorizontalTextAlignment="Center"
-               FlexLayout.Basis="5%"
-               FontSize="12" />
-        <Entry Text="{Binding NumberOfPossibleAnswer}"
-               IsVisible="{Binding IsInitialSetup}"
-               Keyboard="Numeric"
                FlexLayout.Basis="10%"
-               FontSize="18" />
+               FontSize="12" />
         <CollectionView x:Name="MyCollectionView"
                         IsVisible="{Binding IsInitialSetup}"
                         SelectionMode="Multiple"
@@ -49,7 +44,7 @@
         <Button Text="Commencer"
                 IsVisible="{Binding IsInitialSetup}"
                 Command="{Binding OnStartGameCommand}"
-                FlexLayout.Basis="5%" />
+                FlexLayout.Basis="10%" />
         <Label Text="{Binding WordToFind}"
                IsVisible="{Binding IsNotInitialSetup}"
                FlexLayout.Basis="10%"
