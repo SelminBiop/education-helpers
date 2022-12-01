@@ -7,7 +7,9 @@ namespace WhatIsThis.ViewModels;
 [QueryProperty(nameof(Category), "Category")]
 public sealed class JeuPageViewModel : ObservableObject
 {
-    private const string AssociationsKey = "AssociationsKey";
+    public const int NumberOfPossibleAnswer = 4;
+
+    private const string AssociationsKey = "AssociationsKey";    
     private const int NumberOfTimesBeforeRemovingAssociation = 1;
 
     private readonly IAssociationStorageService _storageService;
@@ -33,19 +35,6 @@ public sealed class JeuPageViewModel : ObservableObject
                 association.correspondingResource,
                 () => { })).ToList();
         }
-    }
-
-    private int _numberOfPossibleAnswer = 4;
-    public int NumberOfPossibleAnswer
-    {
-        get => _numberOfPossibleAnswer;
-        set
-        {
-            if (SetProperty(ref _numberOfPossibleAnswer, value))
-            {
-                ((Command)OnStartGameCommand).ChangeCanExecute();
-            }
-        } 
     }
 
     private bool EvaluateIfGameIsReady()

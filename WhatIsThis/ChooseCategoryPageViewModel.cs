@@ -27,12 +27,15 @@ namespace WhatIsThis.ViewModels
                 association => association.Category,
                 association => association,
                 (category, associations) => {
-                    return new CategoryItem
-                    {
-                        Name = category ?? "Aucune categorie",
-                        OnCategorySelected = new Command(async async => await OnCategorySelected(category))
-                    };
-                }).ToList();
+                    if(associations.Count() >= JeuPageViewModel.NumberOfPossibleAnswer) {
+                        return new CategoryItem
+                        {
+                            Name = category ?? "Aucune categorie",
+                            OnCategorySelected = new Command(async async => await OnCategorySelected(category))
+                        };
+                    }
+                    return null;
+                }).Where(category => category is not null).ToList();
         }
 
         private async Task OnCategorySelected(string category) 
