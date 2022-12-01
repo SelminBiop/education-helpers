@@ -28,6 +28,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore $env:Project_Path
     - name: Build
-      run: dotnet build $env:Project_Path --no-restore
+      run: dotnet build $env:Project_path --no-restore
     - name: Test
       run: dotnet test $env:Project_Path --no-build --verbosity normal
