@@ -78,7 +78,6 @@ public sealed class AssociationsPageViewModel : ObservableObject
 
     public sealed class AssociationItem : ObservableObject
     {
-
         private string _word;
         public string Word
         {

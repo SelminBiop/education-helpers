@@ -16,7 +16,11 @@ namespace WhatIsThis.ViewModels
 
         public AppShellViewModel() 
         {
-            AdministratorModeCommand = new Command(() => IsInAdministratorMode = true);
+            AdministratorModeCommand = new Command(() => 
+            { 
+                IsInAdministratorMode = !IsInAdministratorMode;
+                Shell.Current.FlyoutIsPresented = false;
+            });
         }  
     }
 }
