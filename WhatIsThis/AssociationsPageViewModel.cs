@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Text.Json;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using WhatIsThis.Services;
@@ -22,6 +20,8 @@ public sealed class AssociationsPageViewModel : ObservableObject
     public AssociationsPageViewModel(IAssociationStorageService storageService)
     {
         _storageService = storageService;
+
+        UpdateAssociations();   
     }
 
     public void UpdateAssociations()
@@ -78,7 +78,6 @@ public sealed class AssociationsPageViewModel : ObservableObject
 
     public sealed class AssociationItem : ObservableObject
     {
-
         private string _word;
         public string Word
         {

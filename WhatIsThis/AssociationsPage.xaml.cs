@@ -9,13 +9,4 @@ public partial class AssociationsPage : ContentPage
 		InitializeComponent();
         BindingContext = associationsPageViewModel;
 	}
-
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        if(BindingContext is AssociationsPageViewModel associationsPageViewModel)
-        {
-            associationsPageViewModel.UpdateAssociations();
-        }
-    }
 }
