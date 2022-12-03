@@ -18,7 +18,9 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			})
 			.Services
-			.AddTransient<MainPage>()
+            .AddSingleton<AppShell>()
+            .AddSingleton<AppShellViewModel>()
+            .AddTransient<MainPage>()
 			.AddTransient<MainPageViewModel>()
 			.AddTransient<AssociationsPage>()
 			.AddTransient<AssociationsPageViewModel>()
