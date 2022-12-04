@@ -10,17 +10,14 @@ public sealed class JeuPageViewModel : ObservableObject
     public const int NumberOfPossibleAnswer = 4;
 
     private const string AssociationsKey = "AssociationsKey";    
-    private const int NumberOfTimesBeforeRemovingAssociation = 1;
 
     private readonly IAssociationStorageService _storageService;
 
     private IList<string> _removedAssociations = new List<string>();
-    private Dictionary<string, int> _associationTimesAskedCounter = new();
-
-    private IEnumerable<AssociationsPageViewModel.AssociationItem> _selectedAssociations = new List<AssociationsPageViewModel.AssociationItem>();
 
     private string _category;
-    public string Category {
+    public string Category 
+    {
         get => _category;
         set 
         {
@@ -34,12 +31,9 @@ public sealed class JeuPageViewModel : ObservableObject
                 association.word,
                 association.correspondingResource,
                 () => { })).ToList();
-        }
-    }
 
-    private bool EvaluateIfGameIsReady()
-    {
-        return NumberOfPossibleAnswer > 2 && NumberOfPossibleAnswer <= _selectedAssociations.Count();
+            SetupForNewGame();  
+        }
     }
 
     private string _result = string.Empty;
@@ -47,13 +41,6 @@ public sealed class JeuPageViewModel : ObservableObject
     {
         get => _result;
         set => SetProperty(ref _result, value);
-    }
-
-    private bool _showPossibleAnswers;
-    public bool ShowPossibleAnswers
-    {
-        get => _showPossibleAnswers && IsNotInitialSetup;
-        set => SetProperty(ref _showPossibleAnswers, value);
     }
 
     private bool _hasGameEnded;
@@ -68,25 +55,6 @@ public sealed class JeuPageViewModel : ObservableObject
     {
         get => _isGameReady;
         set => SetProperty(ref _isGameReady, value);
-    }
-
-    private bool _isInitialSetup = true;
-    public bool IsInitialSetup
-    {
-        get => _isInitialSetup;
-        set
-        {
-            if(SetProperty(ref _isInitialSetup, value))
-            {
-                OnPropertyChanged(nameof(IsNotInitialSetup));
-                OnPropertyChanged(nameof(ShowPossibleAnswers));
-            }
-        }
-    }
-
-    public bool IsNotInitialSetup
-    {
-        get => !_isInitialSetup;
     }
 
     private string _wordToFind = string.Empty;
@@ -110,13 +78,6 @@ public sealed class JeuPageViewModel : ObservableObject
         set => SetProperty(ref _possibleAnswers, value);
     }
 
-    private ICommand _onStartGameCommand;
-    public ICommand OnStartGameCommand
-    {
-        get => _onStartGameCommand;
-        set => SetProperty(ref _onStartGameCommand, value);
-    }
-
     private ICommand _onSetupGameCommand;
     public ICommand OnSetupGameCommand
     {
@@ -124,65 +85,41 @@ public sealed class JeuPageViewModel : ObservableObject
         set => SetProperty(ref _onSetupGameCommand, value);
     }
 
-    private ICommand _onSelectionChangedCommand;
-    public ICommand OnSelectionChangedCommand
-    {
-        get => _onSelectionChangedCommand;
-        set => SetProperty(ref _onSelectionChangedCommand, value);
-    }
-
     public JeuPageViewModel(IAssociationStorageService storageService)
     {
         _storageService = storageService;
 
-        OnStartGameCommand = new Command(() =>
+        for (int i = 0; i < NumberOfPossibleAnswer; i++) 
         {
-            for (int i = 0; i < NumberOfPossibleAnswer; i++)
-            {
-                _possibleAnswers.Add(new AnswerItem());
-            }
-
-            SetupForNewGame();
-        }, canExecute: EvaluateIfGameIsReady);
+            _possibleAnswers.Add(new AnswerItem());
+        }
 
         OnSetupGameCommand = new Command(() =>
         {
-            HasGameEnded = false;
-            IsInitialSetup = true;
+            SetupForNewGame();  
         });
-
-        OnSelectionChangedCommand = new Command(
-            associations =>
-            {
-                _selectedAssociations = (associations as IList<object>).Cast<AssociationsPageViewModel.AssociationItem>().ToList();
-                ((Command)OnStartGameCommand).ChangeCanExecute();
-            });
     }
 
     public void SetupForNewGame()
     {
         Result = string.Empty;
 
-        IsInitialSetup = false;
-        ShowPossibleAnswers = true;
+        HasGameEnded = false;
 
         _removedAssociations.Clear();
-        _associationTimesAskedCounter.Clear();
 
         SetNextRound();
     }
 
     private void SetNextRound()
     {
-        var associationsToPickFrom = _selectedAssociations.Where(association => !_removedAssociations.Contains(association.Word)).ToList();
+        var associationsToPickFrom = Associations.Where(association => !_removedAssociations.Contains(association.Word)).ToList();
 
         if(!associationsToPickFrom.Any())
         {
-            ShowPossibleAnswers = false;
             WordToFind = string.Empty;
             HasGameEnded = true;
             Result = "Tous les mots ont été trouvés. Bravo!";
-            PossibleAnswers.Clear();
 
             return;
         }
@@ -193,21 +130,9 @@ public sealed class JeuPageViewModel : ObservableObject
         var associationtoFind = associationsToPickFrom[rInt];
         WordToFind = associationtoFind.Word;
 
-        if(_associationTimesAskedCounter.TryGetValue(WordToFind, out var associationAskedCount))
-        {
-            _associationTimesAskedCounter[WordToFind] = ++associationAskedCount;
-        }
-        else
-        {
-            _associationTimesAskedCounter.Add(WordToFind, 1);
-        }
+        _removedAssociations.Add(WordToFind);
 
-        if(_associationTimesAskedCounter[WordToFind] >= NumberOfTimesBeforeRemovingAssociation)
-        {
-            _removedAssociations.Add(WordToFind);
-        }
-
-        var otherAnswers = _selectedAssociations.Where(association => association.Word != WordToFind).ToList();
+        var otherAnswers = Associations.Where(association => association.Word != WordToFind).ToList();
 
         int insertAnswer = r.Next(0, NumberOfPossibleAnswer);
         int currentIteration = 0;
