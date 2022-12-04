@@ -3,7 +3,17 @@
     x:Class="WhatIsThis.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:local="clr-namespace:WhatIsThis.Views">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <toolkit:BoolToObjectConverter 
+                x:Key="IsInAdministratorModeToStringConverter"
+                TrueObject="Mode Jeu"
+                FalseObject="Mode Administrateur"/>
+        </ResourceDictionary>
+    </Shell.Resources>
 
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <Tab Title="Associations">
@@ -18,7 +28,7 @@
         </Tab>
     </FlyoutItem>
 
-    <MenuItem Text="Mode Administrateur"
+    <MenuItem Text="{Binding IsInAdministratorMode, Converter={StaticResource Key=IsInAdministratorModeToStringConverter}}"
               Command="{Binding AdministratorModeCommand}" />
 
 </Shell>
