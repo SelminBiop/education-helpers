@@ -29,6 +29,6 @@
     </FlyoutItem>
 
     <MenuItem Text="{Binding IsInAdministratorMode, Converter={StaticResource Key=IsInAdministratorModeToStringConverter}}"
-              Command="{Binding AdministratorModeCommand}" />
+              Command="{Binding ToggleAdministratorModeCommand}" />
 
 </Shell>

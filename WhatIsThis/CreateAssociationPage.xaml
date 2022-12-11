@@ -31,12 +31,12 @@
             <Button
                 Text="Choisir l'image"
                 HorizontalOptions="Center"
-                Command="{Binding OnImageChosenCommand}" />
+                Command="{Binding ImageChosenCommand}" />
 
             <Button
                 Text="Sauvegarder l'association"
                 HorizontalOptions="Center"
-                Command="{Binding OnSaveCommand}" />
+                Command="{Binding SaveAssociationCommand}" />
 
         </VerticalStackLayout>
     </ScrollView>

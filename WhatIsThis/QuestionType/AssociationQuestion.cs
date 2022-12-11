@@ -5,14 +5,14 @@ namespace WhatIsThis.QuestionType;
 
 internal sealed class AssociationQuestion : IQuestionType
 {
-	public AssociationQuestion()
+    public string FriendlyName => "Créer une Association";
+
+    public ICommand StartCreationCommand { get; }
+
+    public AssociationQuestion()
 	{
         StartCreationCommand = new Command(() =>
         Shell.Current.GoToAsync("CreateAssociationPage"));
 	}
-
-    public string FriendlyName => "Créer une Association";
-
-    public ICommand StartCreationCommand { get; }
 }
 

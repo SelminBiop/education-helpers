@@ -3,20 +3,17 @@ using System.Windows.Input;
 
 namespace WhatIsThis.ViewModels
 {
-    public sealed class AppShellViewModel : ObservableObject
+    public sealed partial class AppShellViewModel : ObservableObject
     {
+        [ObservableProperty]
         private bool _isInAdministratorMode;
-        public bool IsInAdministratorMode 
-        {
-            get =>_isInAdministratorMode;
-            set => SetProperty(ref _isInAdministratorMode, value);
-        }
 
-        public ICommand AdministratorModeCommand { get; set; }
+        [ObservableProperty]
+        public ICommand _toggleAdministratorModeCommand;
 
         public AppShellViewModel() 
         {
-            AdministratorModeCommand = new Command(() => 
+            _toggleAdministratorModeCommand = new Command(() => 
             { 
                 IsInAdministratorMode = !IsInAdministratorMode;
                 Shell.Current.FlyoutIsPresented = false;

@@ -36,7 +36,7 @@
                FlexLayout.Basis="10%" />
         <Button Text="Jouer a nouveau"
                 IsVisible="{Binding HasGameEnded}"
-                Command="{Binding OnSetupGameCommand}"
+                Command="{Binding RestartGameCommand}"
                 FlexLayout.Basis="10%" />
     </FlexLayout>    
 </ContentPage>

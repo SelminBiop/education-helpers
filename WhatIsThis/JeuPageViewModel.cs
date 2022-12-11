@@ -5,7 +5,7 @@ using WhatIsThis.Services;
 
 namespace WhatIsThis.ViewModels;
 [QueryProperty(nameof(Categories), "Categories")]
-public sealed class JeuPageViewModel : ObservableObject
+public sealed partial class JeuPageViewModel : ObservableObject
 {
     public const int NumberOfPossibleAnswer = 4;
 
@@ -15,8 +15,8 @@ public sealed class JeuPageViewModel : ObservableObject
 
     private IList<string> _removedAssociations = new List<string>();
 
-    private ObservableCollection<string> _categories;
-    public ObservableCollection<string> Categories
+    private ObservableCollection<string?> _categories = new();
+    public ObservableCollection<string?> Categories
     {
         get => _categories;
         set 
@@ -28,62 +28,34 @@ public sealed class JeuPageViewModel : ObservableObject
             Associations = storedAssociations
                 .Where(association => _categories.Contains(association.Category))
                 .Select(association => new AssociationsPageViewModel.AssociationItem(
-                association.word,
-                association.correspondingResource,
+                association.Word,
+                association.CorrespondingResource,
                 () => { })).ToList();
 
             SetupForNewGame();  
         }
     }
 
+    [ObservableProperty]
     private string _result = string.Empty;
-    public string Result
-    {
-        get => _result;
-        set => SetProperty(ref _result, value);
-    }
 
+    [ObservableProperty]
     private bool _hasGameEnded;
-    public bool HasGameEnded
-    {
-        get => _hasGameEnded;
-        set => SetProperty(ref _hasGameEnded, value);
-    }
 
+    [ObservableProperty]
     private bool _isGameReady;
-    public bool IsGameReady
-    {
-        get => _isGameReady;
-        set => SetProperty(ref _isGameReady, value);
-    }
 
+    [ObservableProperty]
     private string _wordToFind = string.Empty;
-    public string WordToFind
-    {
-        get => _wordToFind;
-        set => SetProperty(ref _wordToFind, value);
-    }
 
+    [ObservableProperty]
     private IList<AssociationsPageViewModel.AssociationItem> _associations = new List<AssociationsPageViewModel.AssociationItem>();
-    public IList<AssociationsPageViewModel.AssociationItem> Associations
-    {
-        get => _associations;
-        set => SetProperty(ref _associations, value);
-    }
 
-    private ObservableCollection<AnswerItem> _possibleAnswers = new ObservableCollection<AnswerItem>();
-    public ObservableCollection<AnswerItem> PossibleAnswers
-    {
-        get => _possibleAnswers;
-        set => SetProperty(ref _possibleAnswers, value);
-    }
+    [ObservableProperty]
+    private ObservableCollection<AnswerItem> _possibleAnswers = new();
 
-    private ICommand _onSetupGameCommand;
-    public ICommand OnSetupGameCommand
-    {
-        get => _onSetupGameCommand;
-        set => SetProperty(ref _onSetupGameCommand, value);
-    }
+    [ObservableProperty]
+    private ICommand _restartGameCommand;
 
     public JeuPageViewModel(IAssociationStorageService storageService)
     {
@@ -94,7 +66,7 @@ public sealed class JeuPageViewModel : ObservableObject
             _possibleAnswers.Add(new AnswerItem());
         }
 
-        OnSetupGameCommand = new Command(() =>
+        _restartGameCommand = new Command(() =>
         {
             SetupForNewGame();  
         });
@@ -124,7 +96,7 @@ public sealed class JeuPageViewModel : ObservableObject
             return;
         }
 
-        Random r = new Random();
+        Random r = new();
         int rInt = r.Next(0, associationsToPickFrom.Count);
 
         var associationtoFind = associationsToPickFrom[rInt];
@@ -163,21 +135,13 @@ public sealed class JeuPageViewModel : ObservableObject
         }
     }
 
-    public sealed class AnswerItem : ObservableObject
+    public sealed partial class AnswerItem : ObservableObject
     {
-        private ImageSource _resource;
-        public ImageSource Resource
-        {
-            get => _resource;
-            set => SetProperty(ref _resource, value);
-        }
+        [ObservableProperty]
+        private ImageSource? _resource;
 
-        private ICommand _onImageTappedCommand;
-        public ICommand OnImageTappedCommand
-        {
-            get => _onImageTappedCommand;
-            set => SetProperty(ref _onImageTappedCommand, value);
-        }
+        [ObservableProperty]
+        private ICommand? _onImageTappedCommand;
 
         public AnswerItem()
         {
@@ -188,7 +152,7 @@ public sealed class JeuPageViewModel : ObservableObject
             OnImageTappedCommand = new Command(_ => onAnswerSelectedAction.Invoke());
         }
 
-        public void SetResource(ImageSource source)
+        public void SetResource(ImageSource? source)
         {
             MainThread.BeginInvokeOnMainThread(() => Resource = source);
         }
