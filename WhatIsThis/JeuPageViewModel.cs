@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using WhatIsThis.Services;
 
 namespace WhatIsThis.ViewModels;
-[QueryProperty(nameof(Category), "Category")]
+[QueryProperty(nameof(Categories), "Categories")]
 public sealed class JeuPageViewModel : ObservableObject
 {
     public const int NumberOfPossibleAnswer = 4;
@@ -15,18 +15,18 @@ public sealed class JeuPageViewModel : ObservableObject
 
     private IList<string> _removedAssociations = new List<string>();
 
-    private string _category;
-    public string Category 
+    private ObservableCollection<string> _categories;
+    public ObservableCollection<string> Categories
     {
-        get => _category;
+        get => _categories;
         set 
         {
-            _category = value;
+            _categories = value;
 
             var storedAssociations = _storageService.Get(AssociationsKey);
 
             Associations = storedAssociations
-                .Where(association => association.Category == _category)
+                .Where(association => _categories.Contains(association.Category))
                 .Select(association => new AssociationsPageViewModel.AssociationItem(
                 association.word,
                 association.correspondingResource,

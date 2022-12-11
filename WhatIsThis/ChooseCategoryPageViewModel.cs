@@ -1,20 +1,27 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using WhatIsThis.Services;
 
 namespace WhatIsThis.ViewModels
 {
-    public sealed class ChooseCategoryPageViewModel : ObservableObject
+    public sealed partial class ChooseCategoryPageViewModel : ObservableObject
     {
         private const string AssociationsKey = "AssociationsKey";
 
         private readonly IAssociationStorageService _associationStorageService;
 
+        private ObservableCollection<string> _selectedCategories = new();
+
+        [ObservableProperty]
         private IList<CategoryItem> _categories = new List<CategoryItem>();
-        public IList<CategoryItem> Categories {
-            get => _categories;
-            set => SetProperty(ref _categories, value);
-        }
+
+        [ObservableProperty]
+        private ICommand _onSelectionChangedCommand;
+
+        [ObservableProperty]
+        private ICommand _startGameCommand;
 
         public ChooseCategoryPageViewModel(
             IAssociationStorageService associationStorageService) 
@@ -30,37 +37,35 @@ namespace WhatIsThis.ViewModels
                     if(associations.Count() >= JeuPageViewModel.NumberOfPossibleAnswer) {
                         return new CategoryItem
                         {
-                            Name = category ?? "Aucune categorie",
-                            OnCategorySelected = new Command(async async => await OnCategorySelected(category))
+                            Name = category
                         };
                     }
                     return null;
                 }).Where(category => category is not null).ToList();
+
+            OnSelectionChangedCommand = new Command(
+                categories => {
+                    _selectedCategories = (categories as IList<object>).Cast<CategoryItem>().Select(category => category.Name).ToObservableCollection();
+                    ((Command)StartGameCommand).ChangeCanExecute();
+                });
+
+            StartGameCommand = new Command(async _ => await OnCategoriesSelectedAsync(_selectedCategories), _ => _selectedCategories.Count() > 0);
         }
 
-        private async Task OnCategorySelected(string category) 
+        private async Task OnCategoriesSelectedAsync(ObservableCollection<string> categories) 
         {
             var navigationParameters = new Dictionary<string, object>
             {
-                { "Category", category }
+                { "Categories", categories }
             };
             await Shell.Current.GoToAsync("JeuPage", navigationParameters);
         }
 
-        public sealed class CategoryItem : ObservableObject 
+        public sealed class CategoryItem : ObservableObject
         {
-            private string _name;
-            public string Name 
-            {
-                get => _name;
-                set => SetProperty(ref _name, value);
-            }
+            public string? Name { get; set; }
 
-            private ICommand _onCategorySelected;
-            public ICommand OnCategorySelected {
-                get => _onCategorySelected;
-                set => SetProperty(ref _onCategorySelected, value);
-            }
+            public string FriendlyName => string.IsNullOrEmpty(Name) ? "Aucune Categorie" : Name;
         }
     }
 }
