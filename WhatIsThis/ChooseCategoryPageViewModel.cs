@@ -12,16 +12,16 @@ namespace WhatIsThis.ViewModels
 
         private readonly IAssociationStorageService _associationStorageService;
 
-        private ObservableCollection<string> _selectedCategories = new();
+        private ObservableCollection<string?> _selectedCategories = new();
 
         [ObservableProperty]
-        private IList<CategoryItem> _categories = new List<CategoryItem>();
+        private IList<CategoryItem?> _categories = new List<CategoryItem?>();
 
         [ObservableProperty]
-        private ICommand _onSelectionChangedCommand;
+        private ICommand _categoriesSelectionChangedCommand;
 
         [ObservableProperty]
-        private ICommand _startGameCommand;
+        private Command _startGameCommand;
 
         public ChooseCategoryPageViewModel(
             IAssociationStorageService associationStorageService) 
@@ -43,16 +43,19 @@ namespace WhatIsThis.ViewModels
                     return null;
                 }).Where(category => category is not null).ToList();
 
-            OnSelectionChangedCommand = new Command(
+            _categoriesSelectionChangedCommand = new Command(
                 categories => {
-                    _selectedCategories = (categories as IList<object>).Cast<CategoryItem>().Select(category => category.Name).ToObservableCollection();
-                    ((Command)StartGameCommand).ChangeCanExecute();
+                    if((categories as IList<object>)?.Cast<CategoryItem>()?.Select(category => category.Name)?.ToObservableCollection() is ObservableCollection<string> selectedCategories) 
+                    {
+                        _selectedCategories = selectedCategories;
+                    }                    
+                    StartGameCommand.ChangeCanExecute();
                 });
 
-            StartGameCommand = new Command(async _ => await OnCategoriesSelectedAsync(_selectedCategories), _ => _selectedCategories.Count() > 0);
+            _startGameCommand = new Command(async _ => await OnCategoriesSelectedAsync(_selectedCategories), _ => _selectedCategories.Any());
         }
 
-        private async Task OnCategoriesSelectedAsync(ObservableCollection<string> categories) 
+        private async Task OnCategoriesSelectedAsync(ObservableCollection<string?> categories) 
         {
             var navigationParameters = new Dictionary<string, object>
             {

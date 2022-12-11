@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
+using WhatIsThis.Data;
 
 namespace WhatIsThis.Services
 {
-	public interface IAssociationStorageService
+    public interface IAssociationStorageService
 	{
         void Add(string key, Association value);
         void Remove(string key, Association value);
@@ -35,11 +35,15 @@ namespace WhatIsThis.Services
         public IEnumerable<Association> Get(string key)
         {
             var storedJson = Preferences.Get(key, null);
+            var defaultReturnValue = new List<Association>();
             if (!string.IsNullOrEmpty(storedJson))
             {
-                return JsonSerializer.Deserialize<IList<Association>>(storedJson);
+                return JsonSerializer.Deserialize<IList<Association>>(storedJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? defaultReturnValue;
             }
-            return new List<Association>();
+            return defaultReturnValue;
         }
 
         public void Set(string key, IEnumerable<Association> value)

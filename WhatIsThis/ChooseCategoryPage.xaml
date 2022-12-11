@@ -7,7 +7,7 @@
                         Grid.Row="0"
                         ItemsSource="{Binding Categories}"
                         SelectionMode="Multiple"
-                        SelectionChangedCommand="{Binding  OnSelectionChangedCommand}"
+                        SelectionChangedCommand="{Binding  CategoriesSelectionChangedCommand}"
                         SelectionChangedCommandParameter="{Binding SelectedItems, Source={x:Reference CategoriesCollectionView}}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>

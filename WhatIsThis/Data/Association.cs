@@ -1,1 +1,3 @@
-public sealed record Association(string word, string correspondingResource, string Category = "Aucune Categorie");
+namespace WhatIsThis.Data;
+
+public sealed record Association(string Word, string CorrespondingResource, string Category = "Aucune Categorie");

@@ -1,21 +1,18 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using WhatIsThis.Services;
+using WhatIsThis.Data;
 
 namespace WhatIsThis.ViewModels;
 
-public sealed class AssociationsPageViewModel : ObservableObject
+public sealed partial class AssociationsPageViewModel : ObservableObject
 {
     private const string AssociationsKey = "AssociationsKey";
 
     private readonly IAssociationStorageService _storageService;
 
+    [ObservableProperty]
     private IList<AssociationsGroup> _associations = new List<AssociationsGroup>();
-    public IList<AssociationsGroup> Associations
-    {
-        get => _associations;
-        set => SetProperty(ref _associations, value);
-    }
 
     public AssociationsPageViewModel(IAssociationStorageService storageService)
     {
@@ -34,8 +31,8 @@ public sealed class AssociationsPageViewModel : ObservableObject
             (category, associations) =>
             {
                 var associationItems = associations.Select(association => new AssociationItem(
-                association.word,
-                association.correspondingResource,
+                association.Word,
+                association.CorrespondingResource,
                 async () =>
                 {
                     await OnAssociationSelected(association);
@@ -46,21 +43,19 @@ public sealed class AssociationsPageViewModel : ObservableObject
     
     private async Task OnAssociationSelected(Association association) 
     {
-        string choice = await Application.Current.MainPage.DisplayActionSheet($"Que voulez-vous faire avec {association.word}?", "Annuler", "Effacer", "Modifier");
-        if (choice == "Effacer") {
-            _storageService.Remove(AssociationsKey, association);
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                UpdateAssociations();
-            });
-        }
-        else if(choice == "Modifier")
+        if(Application.Current?.MainPage is Page mainPage)
         {
-            var navigationParameters = new Dictionary<string, object>
-            {
-                { "AssociationToModify", association.word }
-            };
-            await Shell.Current.GoToAsync("CreateAssociationPage", navigationParameters);
+            string choice = await mainPage.DisplayActionSheet($"Que voulez-vous faire avec {association.Word}?", "Annuler", "Effacer", "Modifier");
+            if (choice == "Effacer") {
+                _storageService.Remove(AssociationsKey, association);
+                MainThread.BeginInvokeOnMainThread(UpdateAssociations);
+            } else if (choice == "Modifier") {
+                var navigationParameters = new Dictionary<string, object>
+                {
+                    { "AssociationToModify", association.Word }
+                };
+                await Shell.Current.GoToAsync("CreateAssociationPage", navigationParameters);
+            }
         }
     }
 
@@ -76,35 +71,23 @@ public sealed class AssociationsPageViewModel : ObservableObject
         }
     }
 
-    public sealed class AssociationItem : ObservableObject
+    public sealed partial class AssociationItem : ObservableObject
     {
+        [ObservableProperty]
         private string _word;
-        public string Word
-        {
-            get => _word;
-            set => SetProperty(ref _word, value);
-        }
 
-        private ImageSource _resource;
-        public ImageSource Resource
-        {
-            get => _resource;
-            set => SetProperty(ref _resource, value);
-        }
+        [ObservableProperty]
+        private ImageSource? _resource;
 
-        private ICommand _onAssociationTappedCommand;
-        public ICommand OnAssociationTappedCommand
-        {
-            get => _onAssociationTappedCommand;
-            set => SetProperty(ref _onAssociationTappedCommand, value);
-        }
+        [ObservableProperty]
+        private ICommand? _onAssociationTappedCommand;
 
         public AssociationItem(
             string word,
             string resourcePath,
             Action onAssociationSelectedAction)
         {
-            Word = word;
+            _word = word;
             SetAction(onAssociationSelectedAction);
             SetResource(resourcePath);
         }
