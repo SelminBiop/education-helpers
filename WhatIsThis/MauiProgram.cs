@@ -3,6 +3,8 @@ using WhatIsThis.ViewModels;
 using WhatIsThis.Views;
 using WhatIsThis.QuestionType;
 using CommunityToolkit.Maui;
+using Microsoft.Maui.Handlers;
+using Microsoft.Maui.Platform;
 
 namespace WhatIsThis;
 
@@ -38,6 +40,18 @@ public static class MauiProgram
         Routing.RegisterRoute("CreateAssociationPage", typeof(CreateAssociationPage));
         Routing.RegisterRoute("JeuPage", typeof(JeuPage));
 
+#if __ANDROID__
+		//Workaround for the recycled bitmap crash
+        ImageHandler.Mapper.PrependToMapping(nameof(Microsoft.Maui.IImage.Source), (handler, view) => PrependToMappingImageSource(handler, view));
+#endif
+
         return builder.Build();
 	}
+
+#if __ANDROID__
+    public static void PrependToMappingImageSource(IImageHandler handler, Microsoft.Maui.IImage image)
+    {
+        handler.PlatformView?.Clear();
+    }
+#endif
 }
