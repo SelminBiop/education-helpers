@@ -375,3 +375,4 @@ local.properties
 
 # Directory Build overrides for local setups
 Directory.Build.Override.props
+WhatIsThis/Resources/Strings/AppResources.Designer.cs
