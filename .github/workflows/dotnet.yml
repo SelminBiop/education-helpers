@@ -26,7 +26,7 @@ jobs:
     - name: Restore workloads
       run: dotnet workload restore --project $env:Project_Path
     - name: Restore iOS workloads
-      run: dotnet workload install ios maccatalyst
+      run: dotnet workload install ios maccatalyst android
     - name: Restore dependencies
       run: dotnet restore $env:Project_Path
     - name: Build
