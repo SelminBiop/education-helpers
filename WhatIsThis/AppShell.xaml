@@ -4,14 +4,15 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    xmlns:local="clr-namespace:WhatIsThis.Views">
+    xmlns:local="clr-namespace:WhatIsThis.Views"
+    xmlns:markup="clr-namespace:WhatIsThis.MarkupExtensions">
 
     <Shell.Resources>
         <ResourceDictionary>
             <toolkit:BoolToObjectConverter 
                 x:Key="IsInAdministratorModeToStringConverter"
-                TrueObject="Mode Jeu"
-                FalseObject="Mode Administrateur"/>
+                TrueObject="{markup:Localize Key=GameMode}"
+                FalseObject="{markup:Localize Key=AdminMode}"/>
         </ResourceDictionary>
     </Shell.Resources>
 
@@ -30,5 +31,7 @@
 
     <MenuItem Text="{Binding IsInAdministratorMode, Converter={StaticResource Key=IsInAdministratorModeToStringConverter}}"
               Command="{Binding ToggleAdministratorModeCommand}" />
+    <MenuItem Text="{markup:Localize Key=PrivacyPolicy}"
+              Command="{Binding ShowPrivacyPolicyCommand}" />
 
 </Shell>

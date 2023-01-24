@@ -61,6 +61,33 @@ namespace WhatIsThis.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Administrator Mode.
+        /// </summary>
+        internal static string AdminMode {
+            get {
+                return ResourceManager.GetString("AdminMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game Mode.
+        /// </summary>
+        internal static string GameMode {
+            get {
+                return ResourceManager.GetString("GameMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Privacy Policy.
+        /// </summary>
+        internal static string PrivacyPolicy {
+            get {
+                return ResourceManager.GetString("PrivacyPolicy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start.
         /// </summary>
         internal static string StartGame {
