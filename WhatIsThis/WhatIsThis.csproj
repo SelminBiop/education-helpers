@@ -40,7 +40,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.4" />
   </ItemGroup>
   <ItemGroup>
