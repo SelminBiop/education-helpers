@@ -1,0 +1,44 @@
+name: MaUI App Release
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+
+    runs-on: windows-latest
+    
+    env:
+      Project_Path: ./WhatIsThis/WhatIsThis.sln
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Update App Version
+      run: |
+        $xml=[xml](Get-Content ./WhatIsThis/WhatIsThis.csproj)
+        $node=$xml.SelectSingleNode("//ApplicationVersion")
+        $node.InnerText = ${{ vars.VERSIONCODE }}
+        $xml.Save("./WhatIsThis/WhatIsThis.csproj")
+      shell: pwsh
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+    - name: Restore workloads
+      run: dotnet workload restore --project $env:Project_Path
+    - name: Restore iOS workloads
+      run: dotnet workload install ios maccatalyst maui-android
+    - name: Restore dependencies
+      run: dotnet restore $env:Project_Path
+    - name: Build
+      run: dotnet build $env:Project_Path --no-restore
+    - name: Update Version Variable
+      run: |
+        curl -L \
+        -X PATCH \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer <YOUR-TOKEN>"\
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        https://api.github.com/orgs/ORG/actions/variables/NAME \
+        -d '{"name":"VERSIONCODE","value":"octocat","visibility":"selected","selected_repository_ids":[${{ vars.GITHUB_REPOSITORY_ID }}]}'
+      shell: pwsh
