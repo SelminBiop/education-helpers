@@ -32,13 +32,13 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore $env:Project_Path
     - name: Build
-      run: dotnet build $env:Project_Path --no-restore
+      run: dotnet build $env:Project_Path --no-restore --configuration Release
     - name: Upload Android Release to Play Store
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         packageName: com.selmindev.whatisthis
-        releaseFiles: bin/Release/net7.0-android/com.selmindev.whatisthis-Signed.aab
+        releaseFiles:  D:/a/education-helpers/education-helpers/WhatIsThis/bin/Release/net7.0-android/com.selmindev.whatisthis-Signed.aab
         track: production
         inAppUpdatePriority: 2
     - name: Update Version Variable
