@@ -10,10 +10,9 @@ jobs:
     
     env:
       Project_Path: ./WhatIsThis/WhatIsThis.sln
+      GH_TOKEN: ${{ secrets.API_TOKEN }}
 
     steps:
-    - env:
-        GH_TOKEN: ${{ secrets.API_TOKEN }}
     - uses: actions/checkout@v3
     - name: Update App Version
       run: |
