@@ -21,18 +21,21 @@ jobs:
         $node.InnerText = ${{ vars.VERSIONCODE }}
         $xml.Save("./WhatIsThis/WhatIsThis.csproj")
       shell: pwsh
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
-    - name: Restore workloads
-      run: dotnet workload restore --project $env:Project_Path
-    - name: Restore iOS workloads
-      run: dotnet workload install ios maccatalyst maui-android
-    - name: Restore dependencies
-      run: dotnet restore $env:Project_Path
-    - name: Build
-      run: dotnet build $env:Project_Path --no-restore
+    #- name: Setup .NET
+    #  uses: actions/setup-dotnet@v3
+    #  with:
+    #    dotnet-version: 7.0.x
+   # - name: Restore workloads
+   #   run: dotnet workload restore --project $env:Project_Path
+   # - name: Restore iOS workloads
+   #   run: dotnet workload install ios maccatalyst maui-android
+   # - name: Restore dependencies
+   #   run: dotnet restore $env:Project_Path
+   # - name: Build
+    #  run: dotnet build $env:Project_Path --no-restore
+    - name: "Increment VersionCode"
+      run: |
+        echo "incrementedVersion = expr ${{ vars.VERSIONCODE }} + 1" >> $GITHUB_ENV
     - name: Update Version Variable
       run: |
-        gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/SelminBiop/education-helpers/actions/variables/VERSIONCODE -f name="VERSIONCODE" -f value="${{ vars.VERSIONCODE }}" 
+        gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/SelminBiop/education-helpers/actions/variables/VERSIONCODE -f name="VERSIONCODE" -f value="${{ env.incrementedVersion }}" 
