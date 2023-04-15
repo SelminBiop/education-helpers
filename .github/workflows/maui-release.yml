@@ -38,8 +38,5 @@ jobs:
         echo "incrementedVersion = $((${{ vars.VERSIONCODE }} + 1))" >> $GITHUB_ENV
         echo $((${{ vars.VERSIONCODE }} + 1))
     - name: Update Version Variable
-      env:
-        Incremented_Version: env.incrementedVersion
       run: |
-        echo $Incremented_Version
-        gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/SelminBiop/education-helpers/actions/variables/VERSIONCODE -f name="VERSIONCODE" -f value="${Incremented_Version}" 
+        gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/SelminBiop/education-helpers/actions/variables/VERSIONCODE -f name="VERSIONCODE" -f value="$((${{ vars.VERSIONCODE }} + 1))" 
