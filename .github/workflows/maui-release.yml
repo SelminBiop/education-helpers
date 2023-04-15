@@ -27,8 +27,8 @@ jobs:
         dotnet-version: 7.0.x
     - name: Restore workloads
       run: dotnet workload restore --project $env:Project_Path
-    - name: Restore iOS workloads
-      run: dotnet workload install ios maccatalyst maui-android
+    - name: Restore workloads
+      run: dotnet workload install maui-android
     - name: Restore dependencies
       run: dotnet restore $env:Project_Path
     - name: Build
