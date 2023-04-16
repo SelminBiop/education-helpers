@@ -41,6 +41,7 @@ jobs:
         cd Release
         ls  
         cd net7.0-android
+        ls
         cd publish
         ls 
     - name: Upload Android Release to Play Store
