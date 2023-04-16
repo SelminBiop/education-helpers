@@ -32,7 +32,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore $env:Project_Path
     - name: Build
-      run: dotnet publish $env:Project_Path -f net7.0-android -c Release -p:AndroidSigningKeyPass=${{ secrets.SIGNING_PASSWORD }} -p:AndroidSigningStorePass=${{ secrets.SIGNING_PASSWORD}}
+      run: dotnet publish -f net7.0-android -c Release -p:AndroidSigningKeyPass=${{ secrets.SIGNING_PASSWORD }} -p:AndroidSigningStorePass=${{ secrets.SIGNING_PASSWORD}}
     - name: Understand structure
       run: |
         cd WhatIsThis
