@@ -40,6 +40,7 @@ jobs:
         cd bin
         cd Release
         ls  
+        cd net7.0-android
         cd publish
         ls 
     - name: Upload Android Release to Play Store
