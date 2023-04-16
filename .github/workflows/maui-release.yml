@@ -37,8 +37,8 @@ jobs:
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        packageName: com.companyname.whatisthis
-        releaseFiles:  ./WhatIsThis/bin/Release/net7.0-android/publish/com.companyname.whatisthis-Signed.aab
+        packageName: com.selmindev.whatisthis
+        releaseFiles:  ./WhatIsThis/bin/Release/net7.0-android/publish/com.selmindev.whatisthis-Signed.aab
         track: production
         inAppUpdatePriority: 2
     - name: Update Version Variable
