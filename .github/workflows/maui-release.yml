@@ -35,7 +35,13 @@ jobs:
       run: dotnet publish $env:Project_Path -f net7.0-android -c Release -p:AndroidSigningKeyPass=${{ secrets.SIGNING_PASSWORD }} -p:AndroidSigningStorePass=${{ secrets.SIGNING_PASSWORD}}
     - name: Understand structure
       run: |
-        ls   
+        cd WhatIsThis
+        ls
+        cd bin
+        cd Release
+        ls  
+        cd publish
+        ls 
     - name: Upload Android Release to Play Store
       uses: r0adkll/upload-google-play@v1
       with:
