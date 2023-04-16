@@ -1,4 +1,4 @@
-Dename: MaUI App Release
+name: MaUI App Release
 
 on:
   workflow_dispatch:
