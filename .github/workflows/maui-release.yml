@@ -1,4 +1,4 @@
-name: MaUI App Release
+Dename: MaUI App Release
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
     
     env:
-      Project_Path: ./WhatIsThis/WhatIsThis.sln
+      Project_Path: ./WhatIsThis/WhatIsThis.csproj
       GH_TOKEN: ${{ secrets.API_TOKEN }}
 
     steps:
