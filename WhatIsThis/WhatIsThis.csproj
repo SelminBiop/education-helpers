@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <TargetFrameworks>net7.0-android33.0</TargetFrameworks>
@@ -28,7 +28,7 @@
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="5.1.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.4" />
