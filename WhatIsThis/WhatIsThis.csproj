@@ -8,7 +8,7 @@
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationTitle>WhatIsThis</ApplicationTitle>
-    <ApplicationId>com.selmindev.whatisthis</ApplicationId>
+    <ApplicationId>com.companyname.whatisthis</ApplicationId>
     <ApplicationIdGuid>38689366-4e00-4fff-a1d6-90a6ecebc000</ApplicationIdGuid>
     <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
     <ApplicationVersion>3</ApplicationVersion>
