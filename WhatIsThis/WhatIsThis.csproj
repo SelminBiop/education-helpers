@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Nullable>enable</Nullable>
-    <TargetFrameworks>net7.0-android33.0</TargetFrameworks>
+    <TargetFrameworks>net7.0-android</TargetFrameworks>
+    <OutputType>Exe</OutputType>
     <RootNamespace>WhatIsThis</RootNamespace>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
