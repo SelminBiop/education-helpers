@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using System.Windows.Input;
 
 namespace WhatIsThis.ViewModels
@@ -14,7 +15,8 @@ namespace WhatIsThis.ViewModels
         [ObservableProperty]
         public ICommand _showPrivacyPolicyCommand;
 
-        public AppShellViewModel() 
+        public AppShellViewModel(
+            ILogger<AppShellViewModel> logger) 
         {
             _toggleAdministratorModeCommand = new Command(() => 
             { 
@@ -29,7 +31,7 @@ namespace WhatIsThis.ViewModels
                     Uri uri = new Uri("https://github.com/SelminBiop/education-helpers/blob/main/PrivacyPolicy.txt");
                     Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
                 } catch (Exception ex) {
-                    // An unexpected error occured. No browser may be installed on the device.
+                    logger.LogError(ex, "An error occured while opening the Privacy Policies");
                 }
             });
         }  

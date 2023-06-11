@@ -99,8 +99,8 @@ public sealed partial class JeuPageViewModel : ObservableObject
         Random r = new();
         int rInt = r.Next(0, associationsToPickFrom.Count);
 
-        var associationtoFind = associationsToPickFrom[rInt];
-        WordToFind = associationtoFind.Word;
+        var associationToFind = associationsToPickFrom[rInt];
+        WordToFind = associationToFind.Word;
 
         _removedAssociations.Add(WordToFind);
 
@@ -110,7 +110,7 @@ public sealed partial class JeuPageViewModel : ObservableObject
         int currentIteration = 0;
         while(currentIteration < NumberOfPossibleAnswer)
         {
-            var answerItem = _possibleAnswers[currentIteration];
+            var answerItem = PossibleAnswers[currentIteration];
             if(currentIteration == insertAnswer)
             {
                 answerItem.SetAction(() => 
@@ -118,7 +118,7 @@ public sealed partial class JeuPageViewModel : ObservableObject
                     Result = "Bonne réponse!";
                     MainThread.BeginInvokeOnMainThread(SetNextRound);
                 });
-                answerItem.SetResource(associationtoFind.Resource);
+                answerItem.SetResource(associationToFind.Resource);
             }
             else
             {
