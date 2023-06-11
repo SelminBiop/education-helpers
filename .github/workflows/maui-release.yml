@@ -29,23 +29,12 @@ jobs:
       run: dotnet workload install maui-android
     - name: Build
       run: dotnet publish $env:Project_Path -f net7.0-android -c Release -p:AndroidSigningKeyPass=${{ secrets.SIGNING_PASSWORD }} -p:AndroidSigningStorePass=${{ secrets.SIGNING_PASSWORD}}
-    - name: Understand structure
-      run: |
-        cd WhatIsThis
-        ls
-        cd bin
-        cd Release
-        ls  
-        cd net7.0-android
-        ls
-        cd publish
-        ls 
     - name: Upload Android Release to Play Store
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        packageName: com.selmindev.whatisthis
-        releaseFiles:  ./WhatIsThis/bin/Release/net7.0-android/publish/com.selmindev.whatisthis-Signed.aab
+        packageName: com.companyname.whatisthis
+        releaseFiles:  ./WhatIsThis/bin/Release/net7.0-android/publish/com.companyname.whatisthis-Signed.aab
         track: production
         inAppUpdatePriority: 2
     - name: Update Version Variable
