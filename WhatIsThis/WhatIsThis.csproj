@@ -32,7 +32,7 @@
     <PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.10" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
